@@ -31,7 +31,7 @@ export default function SimulationHUD() {
       style={{
         position: 'absolute',
         left: 16,
-        top: 16,
+        top: 100,
         width: collapsed ? 52 : 260,
         background: 'rgba(8, 8, 20, 0.92)',
         border: '1px solid rgba(100, 150, 255, 0.3)',

@@ -71,3 +71,10 @@ export interface GodModePayload {
   crisisText: string;
   intensity: number;
 }
+
+export interface SocietalHealth {
+  economy: number;       // 0-100%
+  foodSecurity: number;  // 0-100%
+  publicSafety: number;  // 0-100%
+  socialHarmony: number; // 0-100%
+}

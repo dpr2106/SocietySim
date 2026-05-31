@@ -7,6 +7,7 @@ import { useSimStore } from '@/lib/store';
 import GodModePanel from '@/components/GodModePanel';
 import NewsPanel from '@/components/NewsPanel';
 import SimulationHUD from '@/components/SimulationHUD';
+import ResourceHUD from '@/components/ResourceHUD';
 
 // Dynamically import the 3D scene (no SSR)
 const Scene = dynamic(() => import('@/components/Scene'), { ssr: false });
@@ -19,6 +20,7 @@ export default function Home() {
   const updateAgent = useSimStore((s) => s.updateAgent);
   const storeSetActiveNews = useSimStore((s) => s.setActiveNews);
   const addNewsToQueue = useSimStore((s) => s.addNewsToQueue);
+  const updateResources = useSimStore((s) => s.updateResources);
 
   const handleTriggerNews = useCallback(
     (news: NewsEvent, reactions: SimulationReaction[]) => {
@@ -26,6 +28,17 @@ export default function Home() {
       storeSetActiveNews(news);
       setNewsQueue((prev) => [...prev.slice(-4), news]);
       setIsSimulating(true);
+
+      // Apply immediate resource impact based on news sentiment
+      let delta = { economy: 0, foodSecurity: 0, publicSafety: 0, socialHarmony: 0 };
+      if (news.sentiment === 'crisis') {
+        delta = { economy: -news.intensity * 4, foodSecurity: -news.intensity * 3, publicSafety: -news.intensity * 5, socialHarmony: -news.intensity * 4 };
+      } else if (news.sentiment === 'negative') {
+        delta = { economy: -news.intensity * 2, foodSecurity: -news.intensity * 1, publicSafety: -news.intensity * 2, socialHarmony: -news.intensity * 2 };
+      } else if (news.sentiment === 'positive') {
+        delta = { economy: news.intensity * 3, foodSecurity: news.intensity * 2, publicSafety: news.intensity * 2, socialHarmony: news.intensity * 4 };
+      }
+      updateResources(delta);
 
       // Apply reactions with staggered timing — store speech but DON'T auto-show bubble
       reactions.forEach((reaction, i) => {
@@ -120,6 +133,35 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Passive Economy Generator
+  useEffect(() => {
+    if (isSimulating) return; // Halt economy during crises
+
+    const tick = setInterval(() => {
+      const { agents, updateResources, resources } = useSimStore.getState();
+      let delta = { economy: 0, foodSecurity: 0, publicSafety: 0, socialHarmony: 0 };
+
+      // Base decay to simulate natural consumption/entropy if no one is working
+      delta.economy -= 0.1;
+      delta.foodSecurity -= 0.2;
+      delta.socialHarmony -= 0.1;
+
+      agents.forEach(agent => {
+        if (agent.state === 'shopping' || agent.archetype === 'Merchant') delta.economy += 0.2;
+        if (agent.archetype === 'Farmer' || agent.archetype === 'Healer') delta.foodSecurity += 0.3;
+        if (agent.archetype === 'Soldier' || agent.state === 'patrolling') delta.publicSafety += 0.2;
+        if (agent.archetype === 'Elder' || agent.state === 'celebrating' || agent.state === 'socializing') delta.socialHarmony += 0.2;
+      });
+
+      // Slowly pull things back to 100% naturally if they are low
+      if (resources.publicSafety < 100) delta.publicSafety += 0.1;
+
+      updateResources(delta);
+    }, 1000);
+
+    return () => clearInterval(tick);
+  }, [isSimulating]);
+
   return (
     <main
       style={{
@@ -203,6 +245,7 @@ export default function Home() {
       )}
 
       {/* UI Panels */}
+      <ResourceHUD />
       <SimulationHUD />
       <GodModePanel onTriggerNews={handleTriggerNews} isSimulating={isSimulating} />
       <NewsPanel newsQueue={newsQueue} activeNews={activeNews} />

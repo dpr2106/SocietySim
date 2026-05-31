@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Agent, NewsEvent, SimState, Emotion } from '@/types';
+import { Agent, NewsEvent, SimState, Emotion, SocietalHealth } from '@/types';
 import { PERSONAS } from '@/lib/personas';
 
 function randomPosition(): [number, number, number] {
@@ -38,6 +38,7 @@ interface SimStore {
   showHUD: boolean;
   newsQueue: NewsEvent[];
   selectedAgentId: number | null;
+  resources: SocietalHealth;
 
   // Actions
   updateAgent: (id: number, patch: Partial<Agent>) => void;
@@ -50,6 +51,7 @@ interface SimStore {
   addNewsToQueue: (news: NewsEvent) => void;
   clearSpeechBubble: (id: number) => void;
   setSelectedAgent: (id: number | null) => void;
+  updateResources: (delta: Partial<SocietalHealth>) => void;
 }
 
 export const useSimStore = create<SimStore>((set) => ({
@@ -61,6 +63,12 @@ export const useSimStore = create<SimStore>((set) => ({
   showHUD: true,
   newsQueue: [],
   selectedAgentId: null,
+  resources: {
+    economy: 100,
+    foodSecurity: 100,
+    publicSafety: 100,
+    socialHarmony: 100,
+  },
 
   updateAgent: (id, patch) =>
     set((state) => ({
@@ -90,4 +98,14 @@ export const useSimStore = create<SimStore>((set) => ({
     })),
 
   setSelectedAgent: (id) => set({ selectedAgentId: id }),
+
+  updateResources: (delta) =>
+    set((state) => ({
+      resources: {
+        economy: Math.min(100, Math.max(0, state.resources.economy + (delta.economy || 0))),
+        foodSecurity: Math.min(100, Math.max(0, state.resources.foodSecurity + (delta.foodSecurity || 0))),
+        publicSafety: Math.min(100, Math.max(0, state.resources.publicSafety + (delta.publicSafety || 0))),
+        socialHarmony: Math.min(100, Math.max(0, state.resources.socialHarmony + (delta.socialHarmony || 0))),
+      },
+    })),
 }));
