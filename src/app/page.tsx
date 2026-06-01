@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { NewsEvent, SimulationReaction } from '@/types';
 import { useSimStore } from '@/lib/store';
-import GodModePanel from '@/components/GodModePanel';
+import GlobalEventsPanel from '@/components/GlobalEventsPanel';
 import NewsPanel from '@/components/NewsPanel';
 import SimulationHUD from '@/components/SimulationHUD';
 import ResourceHUD from '@/components/ResourceHUD';
@@ -323,7 +323,7 @@ export default function Home() {
       {/* UI Panels */}
       <ResourceHUD />
       <SimulationHUD />
-      <GodModePanel onTriggerNews={handleTriggerNews} isSimulating={isSimulating} />
+      <GlobalEventsPanel onTriggerNews={handleTriggerNews} isSimulating={isSimulating} />
       <NewsPanel newsQueue={newsQueue} activeNews={activeNews} />
       <HistoryChart />
     </main>

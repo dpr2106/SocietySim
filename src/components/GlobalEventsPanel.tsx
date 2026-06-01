@@ -4,21 +4,20 @@ import { useState, useRef } from 'react';
 import { useSimStore } from '@/lib/store';
 import { NewsEvent, SimulationReaction } from '@/types';
 
-interface GodModePanelProps {
+interface GlobalEventsPanelProps {
   onTriggerNews: (news: NewsEvent, reactions: SimulationReaction[]) => void;
   isSimulating: boolean;
 }
 
 const QUICK_CRISES = [
-  { label: '☄️ Meteor Strike', text: 'Massive meteorite impacts city center — mass evacuation ordered', intensity: 10 },
-  { label: '🌊 Mega Tsunami', text: 'Giant tsunami wave approaching all coastal cities within hours', intensity: 9 },
-  { label: '🎉 World Peace', text: 'All world leaders sign historic universal peace and prosperity treaty', intensity: 8 },
-  { label: '🦠 Plague', text: 'Unknown deadly virus spreads exponentially across all continents', intensity: 9 },
-  { label: '💰 Gold Rush', text: 'Unlimited free money discovered — government sends $10M to every citizen', intensity: 8 },
-  { label: '👾 Alien Invasion', text: 'Confirmed alien warships entering atmosphere — they demand our leaders', intensity: 10 },
+  { label: '📉 Market Crash', text: 'Global stock markets plunge 30% — severe recession declared', intensity: 9 },
+  { label: '🚀 Economic Boom', text: 'Major technological breakthrough sparks unprecedented economic growth', intensity: 8 },
+  { label: '🦠 Global Pandemic', text: 'New highly contagious virus detected — global lockdowns initiated', intensity: 10 },
+  { label: '🗳️ Divisive Election', text: 'Polarizing national election results announced — citizens divided', intensity: 8 },
+  { label: '🌪️ Natural Disaster', text: 'Category 5 hurricane makes landfall near major supply chains', intensity: 9 },
 ];
 
-export default function GodModePanel({ onTriggerNews, isSimulating }: GodModePanelProps) {
+export default function GlobalEventsPanel({ onTriggerNews, isSimulating }: GlobalEventsPanelProps) {
   const [crisisText, setCrisisText] = useState('');
   const [intensity, setIntensity] = useState(7);
   const [loading, setLoading] = useState(false);
@@ -36,7 +35,7 @@ export default function GodModePanel({ onTriggerNews, isSimulating }: GodModePan
     if (!text.trim() || loading) return;
     setLoading(true);
     try {
-      const res = await fetch('/api/god-mode', {
+      const res = await fetch('/api/global-event', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ crisisText: text, intensity: int, agents }),
@@ -46,7 +45,7 @@ export default function GodModePanel({ onTriggerNews, isSimulating }: GodModePan
         const newsEvent: NewsEvent = {
           id: `god-${Date.now()}`,
           headline: text,
-          source: '⚡ God Mode',
+          source: '🌍 Global Event',
           sentiment: int >= 8 ? 'crisis' : int >= 6 ? 'negative' : 'neutral',
           intensity: int,
           timestamp: Date.now(),
@@ -130,10 +129,10 @@ export default function GodModePanel({ onTriggerNews, isSimulating }: GodModePan
         onClick={() => setCollapsed(!collapsed)}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 20 }}>⚡</span>
+          <span style={{ fontSize: 20 }}>🌍</span>
           {!collapsed && (
             <span style={{ color: '#ff6b6b', fontWeight: 800, fontSize: 14, fontFamily: 'monospace', letterSpacing: 1 }}>
-              GOD MODE
+              GLOBAL EVENTS
             </span>
           )}
         </div>
@@ -234,7 +233,7 @@ export default function GodModePanel({ onTriggerNews, isSimulating }: GodModePan
                 transition: 'all 0.2s',
               }}
             >
-              {loading ? '⏳ PROCESSING...' : '⚡ INJECT CRISIS'}
+              {loading ? '⏳ PROCESSING...' : '🌍 INJECT EVENT'}
             </button>
           </div>
 
