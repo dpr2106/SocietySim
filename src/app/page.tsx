@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { NewsEvent, SimulationReaction } from '@/types';
 import { useSimStore } from '@/lib/store';
 import GlobalEventsPanel from '@/components/GlobalEventsPanel';
+import MayorsOfficePanel from '@/components/MayorsOfficePanel';
 import NewsPanel from '@/components/NewsPanel';
 import SimulationHUD from '@/components/SimulationHUD';
 import ResourceHUD from '@/components/ResourceHUD';
@@ -323,6 +324,7 @@ export default function Home() {
       {/* UI Panels */}
       <ResourceHUD />
       <SimulationHUD />
+      <MayorsOfficePanel onTriggerNews={handleTriggerNews} isSimulating={isSimulating} />
       <GlobalEventsPanel onTriggerNews={handleTriggerNews} isSimulating={isSimulating} />
       <NewsPanel newsQueue={newsQueue} activeNews={activeNews} />
       <HistoryChart />
