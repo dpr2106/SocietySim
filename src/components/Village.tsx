@@ -2,6 +2,7 @@
 
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
 import { useSimStore } from '@/lib/store';
 
@@ -319,6 +320,9 @@ export default function Village() {
           wireframe={false}
         />
       </mesh>
+
+      {/* Atmospheric Sparkles */}
+      <Sparkles count={800} scale={60} size={3} speed={0.4} opacity={0.15} color="#ffe8cc" position={[0, 4, 0]} />
 
       {/* Grid lines on ground */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]}>

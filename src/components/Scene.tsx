@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, Sky, Stars } from '@react-three/drei';
+import { Environment, OrbitControls, Sky, Stars } from '@react-three/drei';
 import * as THREE from 'three';
 import Village from './Village';
 import CharacterManager from './CharacterManager';
@@ -36,6 +36,8 @@ function SceneContents() {
         mieCoefficient={0.005}
         mieDirectionalG={0.8}
       />
+
+      <Environment preset="sunset" background={false} />
 
       {/* Stars */}
       <Stars radius={120} depth={60} count={5000} factor={4} saturation={0.1} fade />
@@ -108,7 +110,6 @@ export default function Scene() {
     <Canvas
       shadows={{ type: THREE.PCFShadowMap }}
       camera={{ position: [0, 22, 32], fov: 52, near: 0.1, far: 500 }}
-      gl={{ antialias: true, alpha: false }}
       style={{ background: '#0a0a1a' }}
       dpr={[1, 2]}
     >

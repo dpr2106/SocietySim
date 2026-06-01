@@ -159,9 +159,9 @@ export default function Character({ agent }: CharacterProps) {
             <meshStandardMaterial
               color={agent.color}
               emissive={agent.color}
-              emissiveIntensity={0.8}
+              emissiveIntensity={4.0}
               transparent
-              opacity={0.7}
+              opacity={0.8}
             />
           </mesh>
         )}
@@ -173,9 +173,9 @@ export default function Character({ agent }: CharacterProps) {
             <meshStandardMaterial
               color={agent.faction === 'Order' ? '#0088ff' : '#ff0000'}
               emissive={agent.faction === 'Order' ? '#0088ff' : '#ff0000'}
-              emissiveIntensity={1.5}
+              emissiveIntensity={6.0}
               transparent
-              opacity={0.8}
+              opacity={0.9}
             />
           </mesh>
         )}
@@ -183,12 +183,14 @@ export default function Character({ agent }: CharacterProps) {
         {/* Head */}
         <mesh ref={headRef} position={[0, 2.05, 0]} castShadow>
           <sphereGeometry args={[0.29, 20, 20]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={agent.accentColor}
-            roughness={0.3}
-            metalness={0.2}
+            roughness={0.15}
+            metalness={0.3}
+            clearcoat={1.0}
+            clearcoatRoughness={0.1}
             emissive={emissiveColor}
-            emissiveIntensity={agent.emotionIntensity * 0.6}
+            emissiveIntensity={agent.emotionIntensity * 2.0}
           />
         </mesh>
 
@@ -220,12 +222,14 @@ export default function Character({ agent }: CharacterProps) {
         {/* Torso */}
         <mesh position={[0, 1.3, 0]} castShadow>
           <boxGeometry args={[0.58, 0.72, 0.32]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={stateColor}
-            roughness={0.6}
+            roughness={0.2}
             metalness={0.1}
+            clearcoat={0.8}
+            clearcoatRoughness={0.2}
             emissive={emissiveColor}
-            emissiveIntensity={agent.emotionIntensity * 0.4}
+            emissiveIntensity={agent.emotionIntensity * 1.5}
           />
         </mesh>
 
